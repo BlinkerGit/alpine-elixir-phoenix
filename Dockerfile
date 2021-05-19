@@ -6,13 +6,16 @@ RUN \
     chmod -R 777 /opt/app && \
     apk update && \
     apk --no-cache --update add \
-      make \
-      g++ \
-      wget \
+      bash \
       curl \
+      g++ \
+      git \
       inotify-tools \
+      make \
       nodejs \
-      nodejs-npm && \
+      nodejs-npm \
+      vim \
+      wget && \
     npm install npm -g --no-progress && \
     update-ca-certificates --fresh && \
     rm -rf /var/cache/apk/*
