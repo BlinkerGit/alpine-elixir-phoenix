@@ -1,28 +1,27 @@
-FROM bitwalker/alpine-elixir:1.10.4
+FROM hexpm/elixir:1.12.0-erlang-24.0-alpine-3.13.3
 
-MAINTAINER Paul Schoenfelder <paulschoenfelder@gmail.com>
-
-# Important!  Update this no-op ENV variable when this Dockerfile
-# is updated with the current date. It will force refresh of all
-# of the base images and things like `apt-get update` won't be using
-# old cached versions when the Dockerfile is built.
-ENV REFRESHED_AT=2020-09-10
-
-# Install NPM
+# Install build tools
 RUN \
     mkdir -p /opt/app && \
     chmod -R 777 /opt/app && \
     apk update && \
     apk --no-cache --update add \
-      make \
-      g++ \
-      wget \
+      bash \
+      ca-certificates \
       curl \
+      g++ \
+      git \
       inotify-tools \
+      make \
       nodejs \
-      nodejs-npm && \
+      nodejs-npm \
+      python2 \
+      vim \
+      wget && \
     npm install npm -g --no-progress && \
     update-ca-certificates --fresh && \
+    rm /etc/ssl/cert.pem && ln -s /etc/ssl/certs/ca-certificates.crt /etc/ssl/cert.pem && \
+    ln -nfs /usr/bin/python2 /usr/bin/python && \
     rm -rf /var/cache/apk/*
 
 # Add local node module binaries to PATH
