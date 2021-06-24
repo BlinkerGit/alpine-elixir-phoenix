@@ -1,12 +1,13 @@
 FROM hexpm/elixir:1.12.0-erlang-24.0-alpine-3.13.3
 
-# Install NPM
+# Install build tools
 RUN \
     mkdir -p /opt/app && \
     chmod -R 777 /opt/app && \
     apk update && \
     apk --no-cache --update add \
       bash \
+      ca-certificates \
       curl \
       g++ \
       git \
@@ -14,10 +15,13 @@ RUN \
       make \
       nodejs \
       nodejs-npm \
+      python2 \
       vim \
       wget && \
     npm install npm -g --no-progress && \
     update-ca-certificates --fresh && \
+    rm /etc/ssl/cert.pem && ln -s /etc/ssl/certs/ca-certificates.crt /etc/ssl/cert.pem && \
+    ln -nfs /usr/bin/python2 /usr/bin/python && \
     rm -rf /var/cache/apk/*
 
 # Add local node module binaries to PATH
