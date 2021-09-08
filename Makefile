@@ -1,6 +1,6 @@
 .PHONY: help
 
-VERSION ?= `cat VERSION`
+VERSION ?= `cat Dockerfile | grep FROM | sed -e 's/.*://' | sed -e 's/-.*//'`
 MAJ_VERSION := $(shell echo $(VERSION) | sed 's/\([0-9][0-9]*\)\.\([0-9][0-9]*\)\(\.[0-9][0-9]*\)*/\1/')
 MIN_VERSION := $(shell echo $(VERSION) | sed 's/\([0-9][0-9]*\)\.\([0-9][0-9]*\)\(\.[0-9][0-9]*\)*/\1.\2/')
 IMAGE_NAME ?= blinker/alpine-elixir-phoenix
