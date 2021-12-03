@@ -1,4 +1,4 @@
-FROM hexpm/elixir:1.12.3-erlang-24.0.6-alpine-3.13.5
+FROM blinker/elixir:1.13.0-erlang-24.1.7-alpine-3.15
 
 # Install build tools
 RUN \
@@ -7,14 +7,13 @@ RUN \
     apk update && \
     apk --no-cache --update add \
       bash \
+      build-base \
       ca-certificates \
       curl \
-      g++ \
       git \
       inotify-tools \
-      make \
       nodejs \
-      nodejs-npm \
+      npm \
       python2 \
       vim \
       wget && \

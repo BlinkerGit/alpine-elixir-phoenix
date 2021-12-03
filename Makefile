@@ -5,9 +5,21 @@ MAJ_VERSION := $(shell echo $(VERSION) | sed 's/\([0-9][0-9]*\)\.\([0-9][0-9]*\)
 MIN_VERSION := $(shell echo $(VERSION) | sed 's/\([0-9][0-9]*\)\.\([0-9][0-9]*\)\(\.[0-9][0-9]*\)*/\1.\2/')
 IMAGE_NAME ?= blinker/alpine-elixir-phoenix
 
+ALPINE_VERSION ?= `cat Dockerfile | grep FROM | sed -e 's/.*alpine-//' | sed -e 's/-.*//'`
+ERLANG_VERSION ?= `cat Dockerfile | grep FROM | sed -e 's/.*erlang-//' | sed -e 's/-.*//'`
+ERLANG_MAJOR := $(shell echo $(ERLANG_VERSION) | sed -e 's/\..*//')
+
 help:
 	@echo "$(IMAGE_NAME):$(VERSION)"
 	@perl -nle'print $& if m{^[a-zA-Z_-]+:.*?## .*$$}' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+elixir:
+	@echo "building elixir ${VERSION} base image..."
+	docker build --force-rm --build-arg OS_VERSION=$(ALPINE_VERSION) --build-arg ERLANG=$(ERLANG_VERSION) --build-arg ERLANG_MAJOR=$(ERLANG_MAJOR) --build-arg ELIXIR=$(VERSION) -t blinker/elixir:$(VERSION)-erlang-$(ERLANG_VERSION)-alpine-$(ALPINE_VERSION) -f Dockerfile.elixir .
+
+erlang:
+	@echo "building erlang ${ERLANG_VERSION} base image..."
+	docker build --force-rm --build-arg OS_VERSION=$(ALPINE_VERSION) --build-arg ERLANG=$(ERLANG_VERSION) -t blinker/erlang:$(ERLANG_VERSION)-alpine-$(ALPINE_VERSION) -f Dockerfile.erlang .
 
 test: ## Test the Docker image
 	docker run --rm -it $(IMAGE_NAME):$(VERSION) elixir --version
