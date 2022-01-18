@@ -15,6 +15,22 @@ help:
 	@echo "$(IMAGE_NAME):$(VERSION)"
 	@perl -nle'print $& if m{^[a-zA-Z_-]+:.*?## .*$$}' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
+latest_elixir:
+	@curl -s https://repo.hex.pm/builds/elixir/builds.txt \
+	   | grep '^v\d\+\.\d\+\.\d\+' \
+		 | awk '{print $$1}' \
+		 | awk '{ if ($$1 ~ /-/) print; else print $$0"_" ; }' \
+		 | sort -rV \
+		 | sed 's/_$$//' \
+		 | grep otp \
+		 | head -1
+
+latest_erlang:
+	@curl -s https://api.github.com/repos/erlang/otp/releases \
+	   | jq -r '.[].tag_name' \
+		 | sort -rV \
+		 | head -1
+
 test: ## Test the Docker image
 	docker run --rm -it $(IMAGE_NAME):$(VERSION) elixir --version
 
