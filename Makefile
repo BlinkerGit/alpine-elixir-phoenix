@@ -56,5 +56,7 @@ clean: ## Clean up generated images
 rebuild: clean build ## Rebuild the Docker image
 
 release: build ## Rebuild and release the Docker image to Docker Hub
+	docker push $(IMAGE_NAME):$(DOCKER_TAG)
 	docker push $(IMAGE_NAME):$(VERSION)
+	docker push $(IMAGE_NAME):$(MIN_VERSION)
 	docker push $(IMAGE_NAME):latest
