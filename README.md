@@ -114,6 +114,21 @@ USER default
 CMD ["mix", "phx.server"]
 ```
 
+## Development
+
+To build a new image, update the FROM tag in Dockerfile with the desired versions of Alpine, Erlang, and Elixir.
+`make build` will pull or build any missing underlying images and then build the requested alpine-elixir-phoenix
+image based on those. `make latest_elixir` and `make latest_erlang` will show the newest releases available.
+
+To release a new image, run `make release`.  This will ensure that the image is built and then push tagged images for
+`latest`, `$MINOR_VERSION`, `$PATCH_VERSION` and `$DOCKER_TAG` to Docker Hub.  For example, if your FROM tag is set
+to `elixir-1.1.1-erlang-2.2.2-alpine-3.3.3`, the pushed image tags will be:
+
+- latest
+- 1.1
+- 1.1.1
+- elixir-1.1.1-erlang-2.2.2-alpine-3.3.3
+
 ## License
 
 MIT
