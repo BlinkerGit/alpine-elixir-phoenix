@@ -72,7 +72,7 @@ clean: ## Clean up generated images
 
 rebuild: clean build ## Rebuild the Docker image
 
-release: elixir## Build and release the Docker image to Docker Hub
+release: elixir ## Build and push the Docker image to Docker Hub
 	docker buildx build --push --platform linux/amd64,linux/arm64 --force-rm \
 				 -t $(IMAGE_NAME):$(DOCKER_TAG) \
 				 -t $(IMAGE_NAME):$(VERSION) \
