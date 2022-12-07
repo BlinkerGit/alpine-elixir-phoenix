@@ -42,7 +42,7 @@ sh: ## Boot to a shell prompt
 
 erlang: ## build the erlang base image
 	@echo "building erlang ${ERLANG_VERSION} base image..."
-	docker build --force-rm \
+	docker buildx build --platform linux/amd64,linux/arm64 --force-rm \
 				 --build-arg OS_VERSION=$(ALPINE_VERSION) \
 				 --build-arg ERLANG=$(ERLANG_VERSION) \
 				 -t blinker/erlang:$(ERLANG_VERSION)-alpine-$(ALPINE_VERSION) \
@@ -50,7 +50,7 @@ erlang: ## build the erlang base image
 
 elixir: erlang ## build the elixir base image
 	@echo "building elixir ${VERSION} base image..."
-	docker build --force-rm \
+	docker buildx build --platform linux/amd64,linux/arm64 --force-rm \
 				 --build-arg OS_VERSION=$(ALPINE_VERSION) \
 				 --build-arg ERLANG=$(ERLANG_VERSION) \
 				 --build-arg ERLANG_MAJOR=$(ERLANG_MAJOR) \
@@ -59,20 +59,23 @@ elixir: erlang ## build the elixir base image
 				 - < ./Dockerfile.elixir
 
 build: elixir ## Build the Docker image
-	docker build --force-rm \
+	docker buildx build --platform linux/amd64,linux/arm64 --force-rm \
 				 -t $(IMAGE_NAME):$(DOCKER_TAG) \
 				 -t $(IMAGE_NAME):$(VERSION) \
 				 -t $(IMAGE_NAME):$(MIN_VERSION) \
 				 -t $(IMAGE_NAME):latest \
 				 - < ./Dockerfile
+	@echo "$(IMAGE_NAME):$(DOCKER_TAG)"
 
 clean: ## Clean up generated images
 	@docker rmi --force $(IMAGE_NAME):$(VERSION) $(IMAGE_NAME):$(MIN_VERSION) $(IMAGE_NAME):latest
 
 rebuild: clean build ## Rebuild the Docker image
 
-release: build ## Rebuild and release the Docker image to Docker Hub
-	docker push $(IMAGE_NAME):$(DOCKER_TAG)
-	docker push $(IMAGE_NAME):$(VERSION)
-	docker push $(IMAGE_NAME):$(MIN_VERSION)
-	docker push $(IMAGE_NAME):latest
+release: elixir## Build and release the Docker image to Docker Hub
+	docker buildx build --push --platform linux/amd64,linux/arm64 --force-rm \
+				 -t $(IMAGE_NAME):$(DOCKER_TAG) \
+				 -t $(IMAGE_NAME):$(VERSION) \
+				 -t $(IMAGE_NAME):$(MIN_VERSION) \
+				 -t $(IMAGE_NAME):latest \
+				 - < ./Dockerfile

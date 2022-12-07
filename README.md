@@ -92,7 +92,7 @@ RUN cd assets/ && \
     cd - && \
     mix do compile, phx.digest
 
-FROM bitwalker/alpine-elixir:latest
+FROM blinker/alpine-elixir:latest
 
 EXPOSE 5000
 ENV PORT=5000 MIX_ENV=prod
