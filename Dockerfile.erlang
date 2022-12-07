@@ -11,7 +11,7 @@ RUN apk add --no-cache \
   bash \
   pcre \
   ca-certificates \
-  $(if [ "${ERLANG:0:1}" = "1" ]; then echo "libressl-dev"; else echo "openssl-dev"; fi) \
+  openssl-dev \
   ncurses-dev \
   unixodbc-dev \
   zlib-dev \
