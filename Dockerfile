@@ -1,4 +1,4 @@
-FROM blinker/elixir:1.14.2-erlang-25.1.2-alpine-3.16.3
+FROM blinker/elixir:1.14.4-erlang-25.2.3-alpine-3.16.3
 
 # Install build tools
 RUN \
