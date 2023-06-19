@@ -18,6 +18,8 @@ help:
 latest_elixir:
 	@curl -s https://repo.hex.pm/builds/elixir/builds.txt \
 	   | grep '^v\d\+\.\d\+\.\d\+' \
+	   | grep -v '\-rc.' \
+	   | grep -v '\-fix' \
 		 | awk '{print $$1}' \
 		 | awk '{ if ($$1 ~ /-/) print; else print $$0"_" ; }' \
 		 | sort -rV \
