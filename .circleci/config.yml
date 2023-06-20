@@ -4,9 +4,6 @@ jobs:
   build_and_deploy:
     docker:
       - image: cimg/base:2023.06
-        auth:
-          username: blinker
-          password: $DOCKERHUB_PASSWORD
     resource_class: xlarge
     environment:
       DOCKER_CLI_EXPERIMENTAL: enabled
@@ -15,6 +12,9 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
           version: 20.10.11
+      - run:
+          name: Docker login
+          command: docker login --username=blinker --password=$DOCKERHUB_PASSWORD
       - run: .circleci/deploy.sh
 
 workflows:
@@ -29,3 +29,5 @@ workflows:
               only: /.*/
             tags:
               only: /.*/
+          context:
+            - dockerhub
