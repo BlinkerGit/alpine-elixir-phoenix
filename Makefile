@@ -45,6 +45,7 @@ sh: ## Boot to a shell prompt
 erlang: ## build the erlang base image
 	@echo "building erlang ${ERLANG_VERSION} base image..."
 	docker buildx build --platform linux/amd64,linux/arm64 --force-rm \
+	       --progress=plain \
 				 --build-arg OS_VERSION=$(ALPINE_VERSION) \
 				 --build-arg ERLANG=$(ERLANG_VERSION) \
 				 -t blinker/erlang:$(ERLANG_VERSION)-alpine-$(ALPINE_VERSION) \
@@ -53,6 +54,7 @@ erlang: ## build the erlang base image
 elixir: erlang ## build the elixir base image
 	@echo "building elixir ${VERSION} base image..."
 	docker buildx build --platform linux/amd64,linux/arm64 --force-rm \
+	       --progress=plain \
 				 --build-arg OS_VERSION=$(ALPINE_VERSION) \
 				 --build-arg ERLANG=$(ERLANG_VERSION) \
 				 --build-arg ERLANG_MAJOR=$(ERLANG_MAJOR) \
@@ -62,6 +64,7 @@ elixir: erlang ## build the elixir base image
 
 build: elixir ## Build the Docker image
 	docker buildx build --platform linux/amd64,linux/arm64 --force-rm \
+	       --progress=plain \
 				 -t $(IMAGE_NAME):$(DOCKER_TAG) \
 				 -t $(IMAGE_NAME):$(VERSION) \
 				 -t $(IMAGE_NAME):$(MIN_VERSION) \
@@ -76,6 +79,7 @@ rebuild: clean build ## Rebuild the Docker image
 
 release: elixir ## Build and push the Docker image to Docker Hub
 	docker buildx build --push --platform linux/amd64,linux/arm64 --force-rm \
+	       --progress=plain \
 				 -t $(IMAGE_NAME):$(DOCKER_TAG) \
 				 -t $(IMAGE_NAME):$(VERSION) \
 				 -t $(IMAGE_NAME):$(MIN_VERSION) \
