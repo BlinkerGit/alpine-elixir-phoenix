@@ -1,4 +1,4 @@
-FROM blinker/elixir:1.13.4-erlang-24.3.3-alpine-3.15
+FROM hexpm/elixir:1.15.0-erlang-25.3.2.2-alpine-3.17.4
 
 # Install build tools
 RUN \
@@ -14,13 +14,13 @@ RUN \
       inotify-tools \
       nodejs \
       npm \
-      python2 \
+      python3 \
       vim \
       wget && \
     npm install npm -g --no-progress && \
     update-ca-certificates --fresh && \
     rm /etc/ssl/cert.pem && ln -s /etc/ssl/certs/ca-certificates.crt /etc/ssl/cert.pem && \
-    ln -nfs /usr/bin/python2 /usr/bin/python && \
+    ln -nfs /usr/bin/python3 /usr/bin/python && \
     rm -rf /var/cache/apk/*
 
 # Add local node module binaries to PATH
