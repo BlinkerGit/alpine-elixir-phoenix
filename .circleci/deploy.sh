@@ -10,8 +10,12 @@ docker context create tls-env
 docker buildx use $(docker buildx create tls-env)
 
 export IMAGE_NAME=blinker/alpine-elixir-phoenix
-export VERSION=$(cat Dockerfile | grep FROM | sed -e 's/.*://' | sed -e 's/-.*//')
-export MIN_VERSION=$(echo $VERSION | sed 's/\([0-9][0-9]*\)\.\([0-9][0-9]*\)\(\.[0-9][0-9]*\)*/\1.\2/')
+export ELIXIR_VERSION=$(cat Dockerfile | grep FROM | sed -e 's/.*://' | sed -e 's/-.*//')
+export ELIXIR_MINOR=$(echo $ELIXIR_VERSION | sed 's/\([0-9][0-9]*\)\.\([0-9][0-9]*\)\(\.[0-9][0-9]*\)*/\1.\2/')
+
+export ERLANG_VERSION=$(cat Dockerfile | grep FROM | sed -e 's/.*erlang-//' | sed -e 's/-.*//')
+export ALPINE_VERSION=$(cat Dockerfile | grep FROM | sed -e 's/.*alpine-//' | sed -e 's/-.*//')
+export DOCKER_TAG=$ELIXIR_VERSION-erlang-$ERLANG_VERSION-alpine-$ALPINE_VERSION
 
 if [[ "$CIRCLE_BRANCH" == "main" ]]; then
   echo "======================================================================"
@@ -19,9 +23,9 @@ if [[ "$CIRCLE_BRANCH" == "main" ]]; then
 
   docker buildx build --push --platform linux/amd64,linux/arm64 --force-rm \
         --progress=plain \
-        -t $IMAGE_NAME:$CIRCLE_SHA1 \
-        -t $IMAGE_NAME:$VERSION \
-        -t $IMAGE_NAME:$MIN_VERSION \
+        -t $IMAGE_NAME:$DOCKER_TAG \
+        -t $IMAGE_NAME:$ELIXIR_VERSION \
+        -t $IMAGE_NAME:$ELIXIR_MINOR \
         -t $IMAGE_NAME:latest \
         - < ./Dockerfile
 
@@ -33,9 +37,9 @@ else
 
   docker buildx build --platform linux/amd64,linux/arm64 --force-rm \
         --progress=plain \
-        -t $IMAGE_NAME:$CIRCLE_SHA1 \
-        -t $IMAGE_NAME:$VERSION \
-        -t $IMAGE_NAME:$MIN_VERSION \
+        -t $IMAGE_NAME:$DOCKER_TAG \
+        -t $IMAGE_NAME:$ELIXIR_VERSION \
+        -t $IMAGE_NAME:$ELIXIR_MINOR \
         -t $IMAGE_NAME:latest \
         - < ./Dockerfile
 
