@@ -1,4 +1,4 @@
-FROM hexpm/elixir:1.15.0-erlang-25.3.2.2-alpine-3.17.4
+FROM hexpm/elixir:1.15.2-erlang-25.3.2.3-alpine-3.17.4
 
 # Install build tools
 RUN \
