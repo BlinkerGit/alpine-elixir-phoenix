@@ -4,7 +4,7 @@ jobs:
   build_and_deploy:
     docker:
       - image: cimg/base:2023.06
-    resource_class: xlarge
+    resource_class: large
     environment:
       DOCKER_CLI_EXPERIMENTAL: enabled
     steps:
