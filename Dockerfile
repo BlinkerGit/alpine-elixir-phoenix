@@ -17,7 +17,6 @@ RUN \
       python3 \
       vim \
       wget && \
-    npm install npm -g --no-progress && \
     update-ca-certificates --fresh && \
     rm /etc/ssl/cert.pem && ln -s /etc/ssl/certs/ca-certificates.crt /etc/ssl/cert.pem && \
     ln -nfs /usr/bin/python3 /usr/bin/python && \
