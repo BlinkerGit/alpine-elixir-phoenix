@@ -14,6 +14,7 @@ RUN \
       inotify-tools \
       nodejs \
       npm \
+      postgresql-client \
       python3 \
       vim \
       wget && \
